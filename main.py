@@ -13,6 +13,7 @@ if not exists("config.txt"):
         f.close()
     print("Arquivo config.txt criado com sucesso! \nRode novamente o progrma")
 else:
+    print("COLOQUE O ARQUIVO espectro.txt NA MESMA PASTA DO ARQUIVO MAIN")
     padraoA=r"-0\.0\d+"
     padraoB=r"0\.1\d+"
     with open("config.txt","r") as f:
@@ -24,44 +25,49 @@ else:
         f.close()
 
     #Abrindo arquivo do espectro - .txt
-    with open("espectro.txt","r") as f:
-        f.seek(233)
-        dados=[i.split() for i in f if i.strip()]
-    #Separando energia e frequencia
-    energia=[float(A[0])+float(dados[i][0])*float(B[0]) for i in range(len(dados))]
-    frequencia=[float(dados[i][1]) for i in range(len(dados))]
-    frequenciaRelativa=[energia[i]*frequencia[i]/sum(frequencia) for i in range(len(dados))]
+    if not exists("espectro.txt"):
+        print("Arquivo espectro.txt não encontrado ou nomeado errado!")
+        input("Pressione ENTER para sair...")
+    else:
+        with open("espectro.txt","r") as f:
+            f.seek(233)
+            dados=[i.split() for i in f if i.strip()]
+        #Separando energia e frequencia
+        energia=[float(A[0])+float(dados[i][0])*float(B[0]) for i in range(len(dados))]
+        frequencia=[float(dados[i][1]) for i in range(len(dados))]
+        frequenciaRelativa=[energia[i]*frequencia[i]/sum(frequencia) for i in range(len(dados))]
 
-    #FWHM
-    VALOR_MEIA_ALTURA=int(max(frequencia)/2)
-    #print(f'Valor máximo a meia altura de frequência = {VALOR_MEIA_ALTURA}')
+        #FWHM
+        VALOR_MEIA_ALTURA=int(max(frequencia)/2)
+        #print(f'Valor máximo a meia altura de frequência = {VALOR_MEIA_ALTURA}')
 
-    amplitude=[]
-    for i in range(len(dados)):
-        if int(dados[i][1]) < int(1.05*VALOR_MEIA_ALTURA) and int(dados[i][1]) > int(0.95*VALOR_MEIA_ALTURA):
-            #print(f'Energia {energia[i]}')
-            amplitude.append(energia[i])
+        amplitude=[]
+        for i in range(len(dados)):
+            if int(dados[i][1]) < int(1.05*VALOR_MEIA_ALTURA) and int(dados[i][1]) > int(0.95*VALOR_MEIA_ALTURA):
+                #print(f'Energia {energia[i]}')
+                amplitude.append(energia[i])
 
-    #Achando energia máxima
-    aux=[]
-    for i in range(len(dados)):
-        if int(dados[i][1]) <6 and int(dados[i][0]) > 300:
-            if len(aux) < 20:
-                aux.append(float(A[0]) + float(dados[i][0]) * float(B[0]))
-                #print(f'Frequencia: {dados[i][1]} ; energia {float(A[0]) + float(dados[i][0]) * float(B[0])}')
+        #Achando energia máxima
+        aux=[]
+        for i in range(len(dados)):
+            if int(dados[i][1]) <6 and int(dados[i][0]) > 300:
+                if len(aux) < 20:
+                    aux.append(float(A[0]) + float(dados[i][0]) * float(B[0]))
+                    #print(f'Frequencia: {dados[i][1]} ; energia {float(A[0]) + float(dados[i][0]) * float(B[0])}')
 
-    #Alternativa
-    # x_canal=[dados[i][0] for i in range(len(dados)) if  (int(dados[i][1])>=0 and int(dados[i][1])<5)]
-    # print(x_canal)
-    # print(len(x_canal))
-    # x_energia=[float(A[0]) + float(x_canal[i]) * float(B[0]) for i in range(len(x_canal))]
-    # print(x_energia)
+        #Alternativa
+        # x_canal=[dados[i][0] for i in range(len(dados)) if  (int(dados[i][1])>=0 and int(dados[i][1])<5)]
+        # print(x_canal)
+        # print(len(x_canal))
+        # x_energia=[float(A[0]) + float(x_canal[i]) * float(B[0]) for i in range(len(x_canal))]
+        # print(x_energia)
 
-    energiaMaxima=mean(aux)
-    #Resultados
-    energia_media_espectral=round(sumprod(energia,frequenciaRelativa)/sum(frequenciaRelativa),1)
-    print(f'Energia média espectral= {energia_media_espectral} keV')
-    print(f'Energia mais frequente: {round(energia[frequenciaRelativa.index(max(frequenciaRelativa))],1)} keV')
-    print(f'Energia máxima: {round(energiaMaxima, 1)} keV')
-    print(f'FWHM {round((max(amplitude)-min(amplitude)),1)} keV')
-    print(f'FWHM (%) {round(100*(max(amplitude)-min(amplitude))/energia_media_espectral,1)}')
+        energiaMaxima=mean(aux)
+        #Resultados
+        energia_media_espectral=round(sumprod(energia,frequenciaRelativa)/sum(frequenciaRelativa),1)
+        print(f'Energia média espectral= {energia_media_espectral} keV')
+        print(f'Energia mais frequente: {round(energia[frequenciaRelativa.index(max(frequenciaRelativa))],1)} keV')
+        print(f'Energia máxima: {round(energiaMaxima, 1)} keV')
+        print(f'FWHM {round((max(amplitude)-min(amplitude)),1)} keV')
+        print(f'FWHM (%) {round(100*(max(amplitude)-min(amplitude))/energia_media_espectral,1)}')
+        input("\nProcessamento concluído. Pressione ENTER para sair...")
