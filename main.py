@@ -5,6 +5,8 @@ from statistics import mean
 
 dados,energia, frequencia,EF,frequenciaRelativa=[],[],[],[],[]
 
+print("LAB ESPECTRO - VERSÃ0 01.2026 \nDesenvolvido por: Leonardo Pacífico leonardo.pacifico@uerj.br\n*****************************")
+
 if not exists("config.txt"):
     with open("config.txt","w") as f:
         A=-0.0210622
@@ -21,7 +23,7 @@ else:
         A=re.findall(padraoA,arquivo)
         B=re.findall(padraoB,arquivo)
         print(f'Coeficiente de calibração \nValor de A = {A[0]}; Valor de B = {B[0]}')
-        print("**********************************")
+        print("VALORES DE REFERÊNCIA. ALTERE-OS CASO NECESSÁRIOS NO ARQUIVO config.txt\n**********************************")
         f.close()
 
     #Abrindo arquivo do espectro - .txt
@@ -46,7 +48,7 @@ else:
             if int(dados[i][1]) < int(1.05*VALOR_MEIA_ALTURA) and int(dados[i][1]) > int(0.95*VALOR_MEIA_ALTURA):
                 #print(f'Energia {energia[i]}')
                 amplitude.append(energia[i])
-
+                print(amplitude)
         #Achando energia máxima
         aux=[]
         for i in range(len(dados)):
@@ -64,10 +66,14 @@ else:
 
         energiaMaxima=mean(aux)
         #Resultados
+        print("RESULTADOS:")
         energia_media_espectral=round(sumprod(energia,frequenciaRelativa)/sum(frequenciaRelativa),1)
         print(f'Energia média espectral= {energia_media_espectral} keV')
         print(f'Energia mais frequente: {round(energia[frequenciaRelativa.index(max(frequenciaRelativa))],1)} keV')
         print(f'Energia máxima: {round(energiaMaxima, 1)} keV')
-        print(f'FWHM {round((max(amplitude)-min(amplitude)),1)} keV')
-        print(f'FWHM (%) {round(100*(max(amplitude)-min(amplitude))/energia_media_espectral,1)}')
+        if amplitude==[]:
+            print("Não foi possível calcular FWHM. Este erro é mais comum para 120 kV, onde FWM refere-se ao maior pico." )
+        else:
+            print(f'FWHM {round((max(amplitude)-min(amplitude)),1)} keV')
+            print(f'FWHM (%) {round(100*(max(amplitude)-min(amplitude))/energia_media_espectral,1)}')
         input("\nProcessamento concluído. Pressione ENTER para sair...")
