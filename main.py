@@ -15,24 +15,26 @@ def Contador(contador):
 
 
 def principal():
-    print("LAB ESPECTRO - VERSÃ0 01.1.2026 \nDesenvolvido por: Leonardo Pacífico leonardo.pacifico@uerj.br\n*****************************")
+    print("\nLAB ESPECTRO - VERSÃ0 01.1.2026 \nDesenvolvido por: Leonardo Pacífico leonardo.pacifico@uerj.br\n*****************************")
 
     if not exists("config.txt"):
         with open("config.txt","w") as f:
             A=-0.0210622
             B=0.134655
-            f.write(f'VALORES DE REFERÊNCIA \n ALTERE-OS CASO NECESSÁRIOS \n Curva de calibração: \n A = {A}; B = {B}')
+            f.write(f'VALORES DE REFERÊNCIA \nALTERE-OS CASO NECESSÁRIOS\nA = {A}; B = {B}')
             f.close()
-        print("Arquivo config.txt criado com sucesso! \nRode novamente o progrma")
+        print("Arquivo config.txt criado com sucesso!\n")
+        input("Pressione ENTER para continuar...")
+
     else:
         print("COLOQUE O ARQUIVO espectro.txt NA MESMA PASTA DO ARQUIVO MAIN")
         padraoA=r"-0\.0\d+"
         padraoB=r"0\.1\d+"
         with open("config.txt","r") as f:
             arquivo = f.read()
-            A=re.findall(padraoA,arquivo)
-            B=re.findall(padraoB,arquivo)
-            print(f'Coeficiente de calibração \nValor de A = {A[0]}; Valor de B = {B[0]}')
+            cA=re.findall(padraoA,arquivo)
+            cB=re.findall(padraoB,arquivo)
+            print(f'Coeficiente de calibração \nValor de A = {cA[0]}; Valor de B = {cB[0]}')
             print("VALORES DE REFERÊNCIA. ALTERE-OS CASO NECESSÁRIOS NO ARQUIVO config.txt\n**********************************")
             f.close()
 
@@ -45,7 +47,7 @@ def principal():
                 f.seek(233)
                 dados=[i.split() for i in f if i.strip()]
             #Separando energia e frequencia
-            energia=[float(A[0])+float(dados[i][0])*float(B[0]) for i in range(len(dados))]
+            energia=[float(cA[0])+float(dados[i][0])*float(cB[0]) for i in range(len(dados))]
             frequencia=[float(dados[i][1]) for i in range(len(dados))]
             frequenciaRelativa=[energia[i]*frequencia[i]/sum(frequencia) for i in range(len(dados))]
 
@@ -64,7 +66,7 @@ def principal():
             for i in range(len(dados)):
                 if int(dados[i][1]) <6 and int(dados[i][0]) > 300:
                     if len(aux) < 20:
-                        aux.append(float(A[0]) + float(dados[i][0]) * float(B[0]))
+                        aux.append(float(cA[0]) + float(dados[i][0]) * float(cB[0]))
                         #print(f'Frequencia: {dados[i][1]} ; energia {float(A[0]) + float(dados[i][0]) * float(B[0])}')
 
             #Alternativa

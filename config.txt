@@ -1,4 +1,0 @@
-VALORES DE REFERÊNCIA 
- ALTERE-OS CASO NECESSÁRIOS 
- Curva de calibração: 
- A = -0.0210622; B = 0.134655
